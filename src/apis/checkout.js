@@ -10,7 +10,7 @@ module.exports = {
     authorization: 'PUBLIC_KEY',
     body: {
       amount$: String,
-      callbackUrl$: String,
+      callbackUrl: String,
       currency: String,
       expireAt$: String,
       mchShortName$: String,
