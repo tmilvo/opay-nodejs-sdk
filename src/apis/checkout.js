@@ -36,7 +36,7 @@ module.exports = {
   cashierStatus: {
     method: 'post',
     path: `cashier/status`,
-    authorization: 'PUBLIC_KEY',
+    authorization: 'SIGNATURE',
     body: { orderNo$: String, reference$: String },
   },
 
@@ -46,7 +46,7 @@ module.exports = {
   closeStatus: {
     method: 'post',
     path: `cashier/close`,
-    authorization: 'PUBLIC_KEY',
+    authorization: 'SIGNATURE',
     body: { orderNo$: String, reference$: String },
   },
 };
