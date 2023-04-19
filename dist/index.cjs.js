@@ -32,7 +32,7 @@ var checkout = {
     authorization: 'PUBLIC_KEY',
     body: {
       amount$: String,
-      callbackUrl$: String,
+      callbackUrl: String,
       currency: String,
       expireAt$: String,
       mchShortName$: String,
@@ -58,7 +58,7 @@ var checkout = {
   cashierStatus: {
     method: 'post',
     path: `cashier/status`,
-    authorization: 'PUBLIC_KEY',
+    authorization: 'SIGNATURE',
     body: { orderNo$: String, reference$: String },
   },
 
@@ -68,7 +68,7 @@ var checkout = {
   closeStatus: {
     method: 'post',
     path: `cashier/close`,
-    authorization: 'PUBLIC_KEY',
+    authorization: 'SIGNATURE',
     body: { orderNo$: String, reference$: String },
   },
 };
@@ -224,11 +224,11 @@ var transfers = {
 };
 
 const sortObjectAlphabetically = (map) => {
-  const keys = sortBy__default['default'](getKeys__default['default'](map), (a) => {
+  const keys = sortBy__default["default"](getKeys__default["default"](map), (a) => {
     return a;
   });
   const newmap = {};
-  forEach__default['default'](keys, (k) => {
+  forEach__default["default"](keys, (k) => {
     newmap[k] = map[k];
   });
   return newmap;
@@ -243,8 +243,8 @@ const setDeep = (obj, key, value) => {
   obj[key[i]] = value;
 };
 
-const generatePrivateKey = (key, data) => {
-  return crypto__default['default'].createHmac('sha512', key).update(JSON.stringify(data)).digest('hex');
+const generatePrivateKey$1 = (key, data) => {
+  return crypto__default["default"].createHmac('sha512', key).update(JSON.stringify(data)).digest('hex');
 };
 
 const isLiteralFalsey = (variable) => {
@@ -297,7 +297,7 @@ const isNullOrUndefined = (value) => {
   return isTypeOf(value, ['undefined', 'null']);
 };
 
-const getClientBody = (config, inputs) => {
+const getClientBody$1 = (config, inputs) => {
   let body = {};
   let inputValues = {};
 
@@ -328,22 +328,22 @@ const getClientBody = (config, inputs) => {
 };
 
 var utils = {
-  generatePrivateKey,
-  getClientBody,
+  generatePrivateKey: generatePrivateKey$1,
+  getClientBody: getClientBody$1,
   sortObjectAlphabetically,
 };
 
-const { generatePrivateKey: generatePrivateKey$1, getClientBody: getClientBody$1 } = utils;
+const { generatePrivateKey, getClientBody } = utils;
 
 const endpoints = Object.assign({}, checkout, inquiry, transfers);
 
 const isEmpty = (value, defined) => {
-  if (defined && isObject__default['default'](value)) {
-    return !some__default['default'](value, function (value, key) {
+  if (defined && isObject__default["default"](value)) {
+    return !some__default["default"](value, function (value, key) {
       return value !== undefined;
     });
   }
-  return _isEmpty__default['default'](value);
+  return _isEmpty__default["default"](value);
 };
 
 const createApiFunction = (config) => {
@@ -364,8 +364,8 @@ const createApiFunction = (config) => {
       }
 
       if (!isEmpty(inputs, true)) {
-        const body = getClientBody$1(config, alphabetizeObjectKeys__default['default'](inputs));
-        payload = alphabetizeObjectKeys__default['default'](body);
+        const body = getClientBody(config, alphabetizeObjectKeys__default["default"](inputs));
+        payload = alphabetizeObjectKeys__default["default"](body);
       } else {
         throw new TypeError('Argument: [ params(s) ] Not Meant To Be Empty!');
       }
@@ -376,7 +376,7 @@ const createApiFunction = (config) => {
     }
 
     if (config.authorization === 'SIGNATURE') {
-      customConfig.headers.Authorization = `Bearer ${generatePrivateKey$1(this.privateKey, JSON.parse(payload))}`;
+      customConfig.headers.Authorization = `Bearer ${generatePrivateKey(this.privateKey, JSON.parse(payload))}`;
     }
 
     customConfig.body = payload;
@@ -435,7 +435,7 @@ class OPay {
       responseType: 'json',
     };
 
-    this.httpClient = got__default['default'].extend(this.httpClientOptions);
+    this.httpClient = got__default["default"].extend(this.httpClientOptions);
   }
 
   mergeClientOptions(options) {
@@ -451,7 +451,7 @@ for (let endpoint in endpoints) {
 
 var OPay_1 = OPay;
 
-OPay_1.prototype.version = '1.0.2';
+OPay_1.prototype.version = '1.0.3';
 
 var opayNodejsSdk = OPay_1;
 

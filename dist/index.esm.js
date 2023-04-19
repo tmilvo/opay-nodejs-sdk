@@ -18,7 +18,7 @@ var checkout = {
     authorization: 'PUBLIC_KEY',
     body: {
       amount$: String,
-      callbackUrl$: String,
+      callbackUrl: String,
       currency: String,
       expireAt$: String,
       mchShortName$: String,
@@ -44,7 +44,7 @@ var checkout = {
   cashierStatus: {
     method: 'post',
     path: `cashier/status`,
-    authorization: 'PUBLIC_KEY',
+    authorization: 'SIGNATURE',
     body: { orderNo$: String, reference$: String },
   },
 
@@ -54,7 +54,7 @@ var checkout = {
   closeStatus: {
     method: 'post',
     path: `cashier/close`,
-    authorization: 'PUBLIC_KEY',
+    authorization: 'SIGNATURE',
     body: { orderNo$: String, reference$: String },
   },
 };
@@ -229,7 +229,7 @@ const setDeep = (obj, key, value) => {
   obj[key[i]] = value;
 };
 
-const generatePrivateKey = (key, data) => {
+const generatePrivateKey$1 = (key, data) => {
   return crypto.createHmac('sha512', key).update(JSON.stringify(data)).digest('hex');
 };
 
@@ -283,7 +283,7 @@ const isNullOrUndefined = (value) => {
   return isTypeOf(value, ['undefined', 'null']);
 };
 
-const getClientBody = (config, inputs) => {
+const getClientBody$1 = (config, inputs) => {
   let body = {};
   let inputValues = {};
 
@@ -314,12 +314,12 @@ const getClientBody = (config, inputs) => {
 };
 
 var utils = {
-  generatePrivateKey,
-  getClientBody,
+  generatePrivateKey: generatePrivateKey$1,
+  getClientBody: getClientBody$1,
   sortObjectAlphabetically,
 };
 
-const { generatePrivateKey: generatePrivateKey$1, getClientBody: getClientBody$1 } = utils;
+const { generatePrivateKey, getClientBody } = utils;
 
 const endpoints = Object.assign({}, checkout, inquiry, transfers);
 
@@ -350,7 +350,7 @@ const createApiFunction = (config) => {
       }
 
       if (!isEmpty(inputs, true)) {
-        const body = getClientBody$1(config, alphabetizeObjectKeys(inputs));
+        const body = getClientBody(config, alphabetizeObjectKeys(inputs));
         payload = alphabetizeObjectKeys(body);
       } else {
         throw new TypeError('Argument: [ params(s) ] Not Meant To Be Empty!');
@@ -362,7 +362,7 @@ const createApiFunction = (config) => {
     }
 
     if (config.authorization === 'SIGNATURE') {
-      customConfig.headers.Authorization = `Bearer ${generatePrivateKey$1(this.privateKey, JSON.parse(payload))}`;
+      customConfig.headers.Authorization = `Bearer ${generatePrivateKey(this.privateKey, JSON.parse(payload))}`;
     }
 
     customConfig.body = payload;
@@ -437,8 +437,8 @@ for (let endpoint in endpoints) {
 
 var OPay_1 = OPay;
 
-OPay_1.prototype.version = '1.0.2';
+OPay_1.prototype.version = '1.0.3';
 
 var opayNodejsSdk = OPay_1;
 
-export default opayNodejsSdk;
+export { opayNodejsSdk as default };
